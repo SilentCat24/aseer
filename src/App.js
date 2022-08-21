@@ -14,29 +14,54 @@ import { getDocumentById } from "./Json/DocumentApi";
 
 const App = () => {
   const [option, setOption] = useState(0);
-  const [data, setData] = useState({});
-  const [auditData, setAuditData] = useState({});
-  const Audits = Audit;
+  const [display, setDisplay] = useState({
+    Head: "",
+    userName: "",
+    CreatedBy: "",
+    status: "",
+    Date: "",
+    status: "",
+  });
   const Docs = Document;
+  const Audits = Audit;
 
-  const getAuditBy = (auditId) => {
-    getAuditById(auditId);
-    setAuditData(getAuditById(auditId));
-    setData({});
+  const onClick = async (auditId) => {
+    const GetAudit = getAuditById(auditId);
+    setDisplay({
+      Head: "AUDITS",
+      userName: GetAudit.auditCreatedBy,
+      CreatedBy: GetAudit.auditName,
+      status: GetAudit.auditPurpose,
+      Date: GetAudit.auditCreatedDate,
+      status: GetAudit.auditStatus,
+    });
   };
+
+  // console.log(display);
+
+  const handleClick = async (documentId) => {
+    const GetDocs = getDocumentById(documentId);
+    setDisplay({
+      Head: "DOCUMENTS ",
+      userName: GetDocs.documentCreatedBy,
+      CreatedBy: GetDocs.documentName,
+      status: GetDocs.documentCreatedDate,
+      Date: GetDocs.documentCreatedDate,
+      status: GetDocs.documentStatus,
+    });
+  };
+
+  // const getAuditBy = (auditId) => {
+  //   setAuditData(getDocumentById(auditId));
+  //   setData({});
+  // };
   // console.log(auditData);
   // console.log(data);
 
-  const getDocumentBy = (documentId) => {
-    getDocumentById(documentId);
-    setData(getDocumentById(documentId));
-    setAuditData({});
-  };
-  // console.log(auditData);
-  // console.log(data);
-  // console.log(data);
-  // console.log(getAuditById(2));
-  // console.log(getAuditById(1));
+  // const getDocumentBy = (documentId) => {
+  //   setData(getDocumentById(documentId));
+  //   setAuditData({});
+  // };
 
   return (
     <Grid container columnSpacing={2} padding={2}>
@@ -61,13 +86,13 @@ const App = () => {
           {(option === 0 || option === 1) && (
             <Paper elevation={4}>
               <h4>Audit</h4>
-              {Audits.map((name, i) => (
+              {Audits.map((obj, i) => (
                 <p
                   key={i}
                   style={{ cursor: "pointer" }}
-                  onClick={(e) => getAuditBy(name.auditId)}
+                  onClick={(e) => onClick(obj.auditId)}
                 >
-                  {name.auditCreatedBy}
+                  {obj.auditCreatedBy}
                 </p>
               ))}
             </Paper>
@@ -78,12 +103,13 @@ const App = () => {
           {(option === 0 || option === 2) && (
             <Paper elevation={4}>
               <h4>Document</h4>
-              {Docs.map((name) => (
+              {Docs.map((obj, i) => (
                 <p
+                  key={i}
                   style={{ cursor: "pointer" }}
-                  onClick={(e) => getDocumentBy(name.documentId)}
+                  onClick={(e) => handleClick(obj.documentId)}
                 >
-                  {name.documentCreatedBy}
+                  {obj.documentCreatedBy}
                 </p>
               ))}
             </Paper>
@@ -96,17 +122,11 @@ const App = () => {
         <Paper elevation={4}>
           {
             <div>
-              <p>
-                User Name:{data.documentCreatedBy} {auditData.auditCreatedBy}{" "}
-              </p>
-
-              <p>
-                Date:{data.documentCreatedDate} {auditData.auditCreatedDate}{" "}
-              </p>
-
-              <p>
-                Status:{data.documentStatus} {auditData.auditStatus}{" "}
-              </p>
+              <h2>{display.Head}</h2>
+              <p>Created BY:{display.CreatedBy}</p>
+              <p>User Name:{display.userName}</p>
+              <p>Date:{display.Date}</p>
+              <p>Status:{display.status.toString()}</p>
             </div>
           }
         </Paper>
